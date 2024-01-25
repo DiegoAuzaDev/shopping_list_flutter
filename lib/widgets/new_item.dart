@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
 
@@ -8,6 +10,14 @@ class NewItem extends StatefulWidget {
 class _NewItemState extends State<NewItem> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Add a new Item"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+        child: const Text("The form"),
+      ),
+    );
   }
 }
