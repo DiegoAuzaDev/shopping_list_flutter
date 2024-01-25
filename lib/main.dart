@@ -15,10 +15,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         colorScheme: ColorScheme.fromSeed(
           brightness: Brightness.dark,
-          seedColor: const Color.fromARGB(76, 218, 41, 255),
-          surface: const Color.fromARGB(255, 42, 51, 29),
+          seedColor: Colors.blue,
+          surface: Colors.blue[900],
         ),
-        scaffoldBackgroundColor: const Color.fromARGB(255, 50, 58, 60),
       ),
       home: const GroceryList(),
     );
