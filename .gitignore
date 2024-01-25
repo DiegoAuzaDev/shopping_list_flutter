@@ -43,5 +43,3 @@ app.*.map.json
 /android/app/release
 
 # Image add into README.md
-
-/image.png
