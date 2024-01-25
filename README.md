@@ -22,7 +22,7 @@ On the lib folder I created 3 new folders in order to separete the functionallit
     ...
     }
     ```
-    - dummy_items.dart
+    - dummy_items.dart 🎯
     ```
     final groceryItems = [
   GroceryItem(
@@ -65,3 +65,26 @@ On the lib folder I created 3 new folders in order to separete the functionallit
     - grocery_item.dart 🎯
 
 
+## Context Navigatio 
+
+    How does the navigation work?
+
+    first we need to identify the state we are currently extending in our class, if we are extending  statelesWidget we must pass **context** into out Navigator but if we are extending statefulWidget we do not need to pass any context becase this state already provived it. 
+
+    - Navigation method - **StatelesWidget**
+
+    ```
+    // you need to proved this method with a context to enable the navigation
+    void _navigationControler(BuildContext context){
+        Navigator.of(context).push(MaterialPageRoute(builder : (cnt) => const ScreenToNavigate()));
+    }
+    ```
+
+    - Navigation method - **StatefulWidget**
+
+    ```
+    // you do not need to proved any context 
+     void _navigationControler(){
+        Navigator.of(context).push(MaterialPageRoute(builder : (cnt) => const ScreenToNavigate()));
+    }
+    ```
