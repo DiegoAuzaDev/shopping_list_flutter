@@ -11,8 +11,7 @@ First we need to know about each single screen and widget and also undestand the
 On the lib folder I created 3 new folders in order to separete the functionallity and data models ⚙️ 🧠. 
 
 
-- Data folder
-    this folder contains all the data that our app will work with 
+- data folder
     - categorie.dart 🎯
     ```
     const categories = {
