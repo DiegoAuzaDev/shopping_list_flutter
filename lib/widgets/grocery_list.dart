@@ -10,6 +10,7 @@ class GroceryList extends StatefulWidget {
 }
 
 class _GroceryListState extends State<GroceryList> {
+  final List<GroceryList> _groveryItems = [];
   void _addItem() {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => const NewItem()));

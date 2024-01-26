@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_list_flutter/data/categories.dart';
 import 'package:shopping_list_flutter/models/category.dart';
+import 'package:shopping_list_flutter/models/grocery_item.dart';
+import 'package:uuid/uuid.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -10,6 +12,8 @@ class NewItem extends StatefulWidget {
 }
 
 class _NewItemState extends State<NewItem> {
+  final randomUUID = const Uuid();
+
   final _formKey = GlobalKey<FormState>();
 
   var _enteredName = "";
@@ -21,9 +25,11 @@ class _NewItemState extends State<NewItem> {
   void _saveItem() {
     _formKey.currentState!.validate();
     _formKey.currentState!.save();
-    print(_enteredName);
-    print(_selectedCategory);
-    print(_selectedQuantity);
+    Navigator.of(context).pop(GroceryItem(
+        id: randomUUID.v4(),
+        name: _enteredName,
+        quantity: _selectedQuantity,
+        category: _selectedCategory));
   }
 
   @override
