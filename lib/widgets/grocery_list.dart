@@ -43,6 +43,14 @@ class _GroceryListState extends State<GroceryList> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Icon(
+            Icons.add_shopping_cart_sharp,
+            size: 60,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(
+            height: 18,
+          ),
           Text("The is empty",
               style: Theme.of(context)
                   .textTheme
