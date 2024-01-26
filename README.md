@@ -109,6 +109,14 @@ first we need to need to let dart know that we want to pass data pack to the wid
 
 ## Pub Package : 
 
+- http 1.2.0
+    This package contains a set of high-level functions and classes that make it easy to consume HTTp resources. it is multi-platform (mobile, desktop, and browser) and support multiple implementations.
+    **Installing**
+    ```
+    flutter pub add http
+    ```
+
+
 - uuid 4.4.4 
     This package allowed the developer to create IDs. 
 

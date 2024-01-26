@@ -25,11 +25,14 @@ class _NewItemState extends State<NewItem> {
   void _saveItem() {
     _formKey.currentState!.validate();
     _formKey.currentState!.save();
-    Navigator.of(context).pop(GroceryItem(
+    Navigator.of(context).pop(
+      GroceryItem(
         id: randomUUID.v4(),
         name: _enteredName,
         quantity: _selectedQuantity,
-        category: _selectedCategory));
+        category: _selectedCategory,
+      ),
+    );
   }
 
   @override
