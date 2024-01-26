@@ -87,6 +87,26 @@ first we need to identify the state we are currently extending in our class, if 
     }
     ```
 
+## Flutter funionallity 
+
+### How pass data using pop and push between widgets 
+
+**Pass Data using pop()**
+first we need to need to let dart know that we want to pass data pack to the widget that push the current widget 
+- How to pass data back ? 
+    ```
+    Navigator.of(conext).pop(ItemType(
+        id : itemID 
+        name : itemName
+        ...
+    ))
+    ```
+- How to get the the data ? 
+    ```
+    // first we need to save the data is getting pass in a variable 
+    final newItemPass = Navigaor.of(context).push<ItemType>(ItemType( id : itemID name : itemName...))
+    ```
+
 ## Pub Package : 
 
 - uuid 4.4.4 
