@@ -51,7 +51,7 @@ class _GroceryListState extends State<GroceryList> {
           const SizedBox(
             height: 18,
           ),
-          Text("The is empty",
+          Text("The list is empty",
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!
