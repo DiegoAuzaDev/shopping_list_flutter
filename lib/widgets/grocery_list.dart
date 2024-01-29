@@ -21,6 +21,7 @@ class _GroceryListState extends State<GroceryList> {
   }
 
   List<GroceryItem> _groveryItems = [];
+  var isLoading = true;
 
   void _loadItems() async {
     final url = Uri.https("flutter-app-shop-9f978-default-rtdb.firebaseio.com",
@@ -43,6 +44,7 @@ class _GroceryListState extends State<GroceryList> {
     }
     setState(() {
       _groveryItems = loadedItemList;
+      isLoading = false;
     });
   }
 
@@ -106,7 +108,14 @@ class _GroceryListState extends State<GroceryList> {
       ),
     );
 
+    Widget isLoadingWidget = const Center(
+      child: CircularProgressIndicator(),
+    );
+
     Widget widgetController() {
+      if (isLoading) {
+        return isLoadingWidget;
+      }
       if (_groveryItems.isEmpty) {
         return noItemList;
       }
