@@ -24,44 +24,78 @@ class _GroceryListState extends State<GroceryList> {
   String? _error;
 
   void _loadItems() async {
-    final url = Uri.https("flutter-app-shop-9f978-default-rtdb.firebaseio.com",
-        "shopping-list.json");
-    final response = await http.get(url);
-    print(response.statusCode);
-    print(response.body);
-    if (response.statusCode >= 404) {
+    final url = Uri.https("flutter-app-shop-9f978-default-rtdb.firebaseio.com");
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode >= 400) {
+        setState(() {
+          _error = 'Failed to load data. Please try again later';
+        });
+      }
+      if (response.body == "null") {
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+      final List<GroceryItem> loadedItemList = [];
+      final Map<String, dynamic> listData = json.decode(response.body);
+      for (final item in listData.entries) {
+        final category = categories.entries
+            .firstWhere((categoryItem) =>
+                categoryItem.value.title == item.value["category"])
+            .value;
+        loadedItemList.add(
+          GroceryItem(
+              id: item.key,
+              name: item.value['name'],
+              quantity: item.value['quantity'],
+              category: category),
+        );
+      }
       setState(() {
-        _error = 'Failed to load data. Please try again later';
+        _groceryItems = loadedItemList;
+        isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        _error = "Something went wrong";
       });
     }
-    final Map<String, dynamic> listData = json.decode(response.body);
-    final List<GroceryItem> loadedItemList = [];
-    for (final item in listData.entries) {
-      final category = categories.entries
-          .firstWhere((categoryItem) =>
-              categoryItem.value.title == item.value["category"])
-          .value;
-      loadedItemList.add(
-        GroceryItem(
-            id: item.key,
-            name: item.value['name'],
-            quantity: item.value['quantity'],
-            category: category),
-      );
-    }
-    setState(() {
-      _groceryItems = loadedItemList;
-      isLoading = false;
-    });
   }
 
-  void _removeItem(GroceryItem item) {
-    final url = Uri.https("flutter-app-shop-9f978-default-rtdb.firebaseio.com",
-        "shopping-list/${item.id}.json");
-    http.delete(url);
+  void _removeItem(GroceryItem item) async {
+    final index = _groceryItems.indexOf(item);
     setState(() {
       _groceryItems.remove(item);
     });
+    final url = Uri.https("flutter-app-shop-9f978-default-rtdb.firebaseio.com",
+        "shopping-list/${item.id}.json");
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
+      if (!context.mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Item could not deleted"),
+        ),
+      );
+      setState(() {
+        _groceryItems.insert(index, item);
+      });
+    } else {
+      if (!context.mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('"${item.name}" was deleted'),
+        ),
+      );
+    }
   }
 
   void _addItem() async {
@@ -85,11 +119,7 @@ class _GroceryListState extends State<GroceryList> {
       itemBuilder: (context, index) => Dismissible(
         key: Key(_groceryItems[index].id),
         onDismissed: (direction) {
-          ScaffoldMessenger.of(context).removeCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('${_groceryItems[index].name} removed')));
           _removeItem(_groceryItems[index]);
-          // Then show a snackbar.
         },
         child: ListTile(
           title: Text(_groceryItems[index].name),
