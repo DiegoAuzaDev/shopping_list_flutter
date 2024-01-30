@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shopping_list_flutter/data/categories.dart';
 import 'package:shopping_list_flutter/models/grocery_item.dart';
@@ -20,13 +19,21 @@ class _GroceryListState extends State<GroceryList> {
     _loadItems();
   }
 
-  List<GroceryItem> _groveryItems = [];
+  List<GroceryItem> _groceryItems = [];
   var isLoading = true;
+  String? _error;
 
   void _loadItems() async {
     final url = Uri.https("flutter-app-shop-9f978-default-rtdb.firebaseio.com",
         "shopping-list.json");
     final response = await http.get(url);
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode >= 404) {
+      setState(() {
+        _error = 'Failed to load data. Please try again later';
+      });
+    }
     final Map<String, dynamic> listData = json.decode(response.body);
     final List<GroceryItem> loadedItemList = [];
     for (final item in listData.entries) {
@@ -43,8 +50,17 @@ class _GroceryListState extends State<GroceryList> {
       );
     }
     setState(() {
-      _groveryItems = loadedItemList;
+      _groceryItems = loadedItemList;
       isLoading = false;
+    });
+  }
+
+  void _removeItem(GroceryItem item) {
+    final url = Uri.https("flutter-app-shop-9f978-default-rtdb.firebaseio.com",
+        "shopping-list/${item.id}.json");
+    http.delete(url);
+    setState(() {
+      _groceryItems.remove(item);
     });
   }
 
@@ -58,23 +74,33 @@ class _GroceryListState extends State<GroceryList> {
       return;
     }
     setState(() {
-      _groveryItems.add(newItem);
+      _groceryItems.add(newItem);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final Widget itemList = ListView.builder(
-      itemCount: _groveryItems.length,
-      itemBuilder: (context, index) => ListTile(
-        title: Text(_groveryItems[index].name),
-        leading: Container(
-          width: 24,
-          height: 24,
-          color: _groveryItems[index].category.color,
-        ),
-        trailing: Text(
-          _groveryItems[index].quantity.toString(),
+      itemCount: _groceryItems.length,
+      itemBuilder: (context, index) => Dismissible(
+        key: Key(_groceryItems[index].id),
+        onDismissed: (direction) {
+          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('${_groceryItems[index].name} removed')));
+          _removeItem(_groceryItems[index]);
+          // Then show a snackbar.
+        },
+        child: ListTile(
+          title: Text(_groceryItems[index].name),
+          leading: Container(
+            width: 24,
+            height: 24,
+            color: _groceryItems[index].category.color,
+          ),
+          trailing: Text(
+            _groceryItems[index].quantity.toString(),
+          ),
         ),
       ),
     );
@@ -113,10 +139,15 @@ class _GroceryListState extends State<GroceryList> {
     );
 
     Widget widgetController() {
+      if (_error != null) {
+        return Center(
+          child: Text(_error!),
+        );
+      }
       if (isLoading) {
         return isLoadingWidget;
       }
-      if (_groveryItems.isEmpty) {
+      if (_groceryItems.isEmpty) {
         return noItemList;
       }
       return itemList;
